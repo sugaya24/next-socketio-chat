@@ -1,11 +1,58 @@
+import React, { useRef, useState, useEffect } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
+import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
+import { io } from 'socket.io-client';
 
-import styles from '@/styles/Home.module.css';
+interface IMsg {
+  user: string;
+  msg: string;
+}
 
-export default function Home() {
+const Home = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [connected, setConnected] = useState<boolean>(false);
+  const [chat, setChat] = useState<IMsg[]>([]);
+  const [msg, setMsg] = useState<string>(``);
+  const [user, setUser] = useState<string>(`anonymous`);
+
+  useEffect((): any => {
+    const socket = io({ path: `/api/socketio` });
+    socket.on(`connect`, () => {
+      console.log(`SOCKET CONNECTED!`, socket.id);
+      setConnected(true);
+    });
+
+    socket.on(`message`, (message: IMsg) => {
+      chat.push(message);
+      setChat([...chat]);
+    });
+
+    if (socket) return () => socket.disconnect();
+  }, []);
+
+  const sendMessage = async () => {
+    if (msg) {
+      const message: IMsg = {
+        user,
+        msg,
+      };
+
+      const res = await fetch(`/api/chat`, {
+        method: `POST`,
+        headers: {
+          'Content-Type': `application/json`,
+        },
+        body: JSON.stringify(message),
+      });
+
+      if (res.ok) setMsg(``);
+    }
+
+    inputRef?.current?.focus();
+  };
+
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>TypeScript starter for Next.js</title>
         <meta
@@ -15,61 +62,33 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{` `}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <p className={styles.description}>This is not an official starter!</p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=typescript-nextjs-starter"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=typescript-nextjs-starter"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{` `}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <Container>
+        <Heading>Next.js + Socket.io Chat App</Heading>
+        <Input value={user} onChange={(e) => setUser(e.target.value)} />
+        <Input
+          ref={inputRef}
+          value={msg}
+          disabled={!connected}
+          onChange={(e) => setMsg(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === `Enter`) {
+              sendMessage();
+            }
+          }}
+        />
+        <Button onClick={sendMessage}>SEND</Button>
+        {chat.length ? (
+          chat.map((chat, i) => (
+            <Box key={i}>
+              {chat.user}: {chat.msg}
+            </Box>
+          ))
+        ) : (
+          <Box>messages don&apos;t exist yet.</Box>
+        )}
+      </Container>
     </div>
   );
-}
+};
+
+export default Home;
