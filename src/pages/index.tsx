@@ -2,52 +2,54 @@ import React, { useRef, useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
+import { useRouter } from 'next/router';
 
-interface IMsg {
-  user: string;
-  msg: string;
+export interface Message {
+  username: string;
+  messageText: string;
+  id?: string;
 }
 
 const Home = () => {
+  const [socket, _] = useState(() => io());
+  const router = useRouter();
+  // const { roomId } = router.query;
+  const roomId = `room1`;
   const inputRef = useRef<HTMLInputElement>(null);
   const [connected, setConnected] = useState<boolean>(false);
-  const [chat, setChat] = useState<IMsg[]>([]);
-  const [msg, setMsg] = useState<string>(``);
-  const [user, setUser] = useState<string>(`anonymous`);
+  const [messageText, setMessageText] = useState<string>(``);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [username, setUsername] = useState<string>(`anonymous`);
 
   useEffect((): any => {
-    const socket = io({ path: `/api/socketio` });
+    // if (!roomId) return;
+    socket.emit(`join`, roomId);
     socket.on(`connect`, () => {
-      console.log(`SOCKET CONNECTED!`, socket.id);
+      console.log(`socket connected`);
       setConnected(true);
+      socket.emit(`join`, roomId);
     });
-
-    socket.on(`message`, (message: IMsg) => {
-      chat.push(message);
-      setChat([...chat]);
+    socket.on(`message`, (data: Message) => {
+      console.log(`send message`);
+      setMessages((prev) => [
+        ...prev,
+        {
+          username: data.username,
+          messageText: data.messageText,
+        },
+      ]);
     });
-
-    if (socket) return () => socket.disconnect();
   }, []);
 
-  const sendMessage = async () => {
-    if (msg) {
-      const message: IMsg = {
-        user,
-        msg,
-      };
-
-      const res = await fetch(`/api/chat`, {
-        method: `POST`,
-        headers: {
-          'Content-Type': `application/json`,
-        },
-        body: JSON.stringify(message),
-      });
-
-      if (res.ok) setMsg(``);
-    }
-
+  const sendMessage = (messageText: string) => {
+    if (!messageText) return;
+    const message = {
+      messageText,
+      username,
+      roomId,
+    };
+    socket.emit(`message`, message, roomId);
+    setMessageText(``);
     inputRef?.current?.focus();
   };
 
@@ -64,23 +66,23 @@ const Home = () => {
 
       <Container>
         <Heading>Next.js + Socket.io Chat App</Heading>
-        <Input value={user} onChange={(e) => setUser(e.target.value)} />
+        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
         <Input
           ref={inputRef}
-          value={msg}
+          value={messageText}
           disabled={!connected}
-          onChange={(e) => setMsg(e.target.value)}
+          onChange={(e) => setMessageText(e.target.value)}
           onKeyPress={(e) => {
             if (e.key === `Enter`) {
-              sendMessage();
+              sendMessage(messageText);
             }
           }}
         />
-        <Button onClick={sendMessage}>SEND</Button>
-        {chat.length ? (
-          chat.map((chat, i) => (
+        <Button onClick={() => sendMessage(messageText)}>SEND</Button>
+        {messages.length ? (
+          messages.map((message, i) => (
             <Box key={i}>
-              {chat.user}: {chat.msg}
+              {message.username}: {message.messageText}@{roomId}
             </Box>
           ))
         ) : (
