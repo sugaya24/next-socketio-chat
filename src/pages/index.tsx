@@ -13,8 +13,7 @@ export interface Message {
 const Home = () => {
   const [socket, _] = useState(() => io());
   const router = useRouter();
-  // const { roomId } = router.query;
-  const roomId = `room1`;
+  const roomId = `home`;
   const inputRef = useRef<HTMLInputElement>(null);
   const [connected, setConnected] = useState<boolean>(false);
   const [messageText, setMessageText] = useState<string>(``);
@@ -22,12 +21,9 @@ const Home = () => {
   const [username, setUsername] = useState<string>(`anonymous`);
 
   useEffect((): any => {
-    // if (!roomId) return;
-    socket.emit(`join`, roomId);
     socket.on(`connect`, () => {
-      console.log(`socket connected`);
-      setConnected(true);
       socket.emit(`join`, roomId);
+      setConnected(true);
     });
     socket.on(`message`, (data: Message) => {
       console.log(`send message`);
@@ -46,7 +42,6 @@ const Home = () => {
     const message = {
       messageText,
       username,
-      roomId,
     };
     socket.emit(`message`, message, roomId);
     setMessageText(``);
@@ -82,7 +77,7 @@ const Home = () => {
         {messages.length ? (
           messages.map((message, i) => (
             <Box key={i}>
-              {message.username}: {message.messageText}@{roomId}
+              {message.username}: {message.messageText}
             </Box>
           ))
         ) : (
