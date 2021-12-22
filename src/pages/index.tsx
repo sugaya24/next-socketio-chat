@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/router';
+import Sidebar from '@/components/Sidebar';
 
 export interface Message {
   username: string;
@@ -49,7 +50,7 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <Box h={`100%`}>
       <Head>
         <title>TypeScript starter for Next.js</title>
         <meta
@@ -59,32 +60,41 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Container>
-        <Heading>Next.js + Socket.io Chat App</Heading>
-        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
-        <Input
-          ref={inputRef}
-          value={messageText}
-          disabled={!connected}
-          onChange={(e) => setMessageText(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === `Enter`) {
-              sendMessage(messageText);
-            }
-          }}
-        />
-        <Button onClick={() => sendMessage(messageText)}>SEND</Button>
-        {messages.length ? (
-          messages.map((message, i) => (
-            <Box key={i}>
-              {message.username}: {message.messageText}
-            </Box>
-          ))
-        ) : (
-          <Box>messages don&apos;t exist yet.</Box>
-        )}
+      <Container h={`100%`} display={`flex`} flexDir={`row`}>
+        <Box w={`30%`} h={`100%`} mr={`4`}>
+          <Sidebar />
+        </Box>
+
+        <Box w={`70%`}>
+          <Heading>Next.js + Socket.io Chat App</Heading>
+          <Input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <Input
+            ref={inputRef}
+            value={messageText}
+            disabled={!connected}
+            onChange={(e) => setMessageText(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === `Enter`) {
+                sendMessage(messageText);
+              }
+            }}
+          />
+          <Button onClick={() => sendMessage(messageText)}>SEND</Button>
+          {messages.length ? (
+            messages.map((message, i) => (
+              <Box key={i}>
+                {message.username}: {message.messageText}
+              </Box>
+            ))
+          ) : (
+            <Box>messages don&apos;t exist yet.</Box>
+          )}
+        </Box>
       </Container>
-    </div>
+    </Box>
   );
 };
 

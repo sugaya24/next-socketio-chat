@@ -1,3 +1,4 @@
+import Sidebar from '@/components/Sidebar';
 import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -33,6 +34,8 @@ const RoomPage = () => {
   useEffect(() => {
     if (!roomId) return;
     socket.emit(`join`, roomId);
+    // load messages
+    setMessages([]);
   }, [roomId]);
 
   const sendMessage = (messageText: string) => {
@@ -48,30 +51,36 @@ const RoomPage = () => {
   };
 
   return (
-    <Container>
-      <Heading>Room: {roomId}</Heading>
-      <Input value={username} onChange={(e) => setUsername(e.target.value)} />
-      <Input
-        ref={inputRef}
-        value={messageText}
-        disabled={!connected}
-        onChange={(e) => setMessageText(e.target.value)}
-        onKeyPress={(e) => {
-          if (e.key === `Enter`) {
-            sendMessage(messageText);
-          }
-        }}
-      />
-      <Button onClick={() => sendMessage(messageText)}>SEND</Button>
-      {messages.length ? (
-        messages.map((message, i) => (
-          <Box key={i}>
-            {message.username}: {message.messageText}@{roomId}
-          </Box>
-        ))
-      ) : (
-        <Box>messages don&apos;t exist yet.</Box>
-      )}
+    <Container h={`100%`} display={`flex`} flexDir={`row`}>
+      <Box h={`100%`} w={`30%`} mr={`4`}>
+        <Sidebar />
+      </Box>
+
+      <Box h={`100%`} w={`70%`}>
+        <Heading>Room: {roomId}</Heading>
+        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
+        <Input
+          ref={inputRef}
+          value={messageText}
+          disabled={!connected}
+          onChange={(e) => setMessageText(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === `Enter`) {
+              sendMessage(messageText);
+            }
+          }}
+        />
+        <Button onClick={() => sendMessage(messageText)}>SEND</Button>
+        {messages.length ? (
+          messages.map((message, i) => (
+            <Box key={i}>
+              {message.username}: {message.messageText}
+            </Box>
+          ))
+        ) : (
+          <Box>messages don&apos;t exist yet.</Box>
+        )}
+      </Box>
     </Container>
   );
 };
