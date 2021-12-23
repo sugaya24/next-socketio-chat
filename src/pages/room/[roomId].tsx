@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { Message } from '..';
+import { useSession } from 'next-auth/react';
 
 const RoomPage = () => {
   const [socket, _] = useState(() => io());
@@ -14,6 +15,7 @@ const RoomPage = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { roomId } = router.query;
+  const { data: session } = useSession();
 
   useEffect(() => {
     socket.on(`connect`, () => {
@@ -38,6 +40,12 @@ const RoomPage = () => {
     setMessages([]);
   }, [roomId]);
 
+  useEffect(() => {
+    if (session?.user?.name) {
+      setUsername(session!.user!.name);
+    }
+  }, [session]);
+
   const sendMessage = (messageText: string) => {
     if (!messageText) return;
     const message = {
@@ -58,7 +66,6 @@ const RoomPage = () => {
 
       <Box h={`100%`} w={`70%`}>
         <Heading>Room: {roomId}</Heading>
-        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
         <Input
           ref={inputRef}
           value={messageText}

@@ -4,6 +4,7 @@ import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import Sidebar from '@/components/Sidebar';
+import { useSession } from 'next-auth/react';
 
 export interface Message {
   username: string;
@@ -20,6 +21,7 @@ const Home = () => {
   const [messageText, setMessageText] = useState<string>(``);
   const [messages, setMessages] = useState<Message[]>([]);
   const [username, setUsername] = useState<string>(`anonymous`);
+  const { data: session } = useSession();
 
   useEffect((): any => {
     socket.on(`connect`, () => {
@@ -37,6 +39,12 @@ const Home = () => {
       ]);
     });
   }, []);
+
+  useEffect(() => {
+    if (session?.user?.name) {
+      setUsername(session!.user!.name);
+    }
+  }, [session]);
 
   const sendMessage = (messageText: string) => {
     if (!messageText) return;
@@ -67,10 +75,6 @@ const Home = () => {
 
         <Box w={`70%`}>
           <Heading>Next.js + Socket.io Chat App</Heading>
-          <Input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
           <Input
             ref={inputRef}
             value={messageText}
