@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 export interface Message {
   username: string;
@@ -20,6 +21,7 @@ const Home = () => {
   const [messageText, setMessageText] = useState<string>(``);
   const [messages, setMessages] = useState<Message[]>([]);
   const [username, setUsername] = useState<string>(`anonymous`);
+  const { data: session } = useSession();
 
   useEffect((): any => {
     // if (!roomId) return;
@@ -40,6 +42,12 @@ const Home = () => {
       ]);
     });
   }, []);
+
+  useEffect(() => {
+    if (session?.user?.name) {
+      setUsername(session!.user!.name);
+    }
+  }, [session]);
 
   const sendMessage = (messageText: string) => {
     if (!messageText) return;
@@ -66,7 +74,6 @@ const Home = () => {
 
       <Container>
         <Heading>Next.js + Socket.io Chat App</Heading>
-        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
         <Input
           ref={inputRef}
           value={messageText}

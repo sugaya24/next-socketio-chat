@@ -17,10 +17,22 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { data: session } = useSession();
+
+  const LoginHandler = () => {
+    if (session) {
+      return <MenuItem onClick={() => signOut()}>Logout</MenuItem>;
+    } else {
+      return <MenuItem onClick={() => signIn()}>Login</MenuItem>;
+    }
+  };
+
   return (
     <>
       <Box bg={useColorModeValue(`gray.100`, `gray.900`)} px={4}>
@@ -43,7 +55,11 @@ export default function Navbar() {
                 >
                   <Avatar
                     size={`sm`}
-                    src={`https://avatars.dicebear.com/api/male/username.svg`}
+                    src={
+                      session?.user?.image
+                        ? session?.user.image
+                        : `https://avatars.dicebear.com/api/male/username.svg`
+                    }
                   />
                 </MenuButton>
                 <MenuList alignItems={`center`}>
@@ -51,7 +67,11 @@ export default function Navbar() {
                   <Center>
                     <Avatar
                       size={`2xl`}
-                      src={`https://avatars.dicebear.com/api/male/username.svg`}
+                      src={
+                        session?.user?.image
+                          ? session?.user.image
+                          : `https://avatars.dicebear.com/api/male/username.svg`
+                      }
                     />
                   </Center>
                   <br />
@@ -62,7 +82,7 @@ export default function Navbar() {
                   <MenuDivider />
                   <MenuItem>Your Servers</MenuItem>
                   <MenuItem>Account Settings</MenuItem>
-                  <MenuItem>Logout</MenuItem>
+                  <LoginHandler />
                 </MenuList>
               </Menu>
             </Stack>
