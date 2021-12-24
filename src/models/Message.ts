@@ -2,8 +2,9 @@ import mongoose, { Document, Model, models, Schema } from 'mongoose';
 
 export interface IMessage extends Document {
   username: string;
-  message: string;
-  createdAt: Date;
+  messageText: string;
+  createdAt?: Date;
+  _id?: string;
 }
 
 const messageScheme: Schema = new mongoose.Schema({
@@ -11,7 +12,7 @@ const messageScheme: Schema = new mongoose.Schema({
     type: String,
     required: [true, `Please add a username`],
   },
-  message: {
+  messageText: {
     type: String,
     required: [true, `Please add a message`],
   },
@@ -21,10 +22,6 @@ const messageScheme: Schema = new mongoose.Schema({
     required: [true, `Please add a created date`],
   },
 });
-
-// const MessageModel = mongoose.model<IMessage>(`Message`, messageScheme);
-
-// export default Message;
 
 type MessageModel = Model<IMessage>;
 export default models.Message

@@ -13,7 +13,7 @@ export interface Message {
   id?: string;
 }
 
-const Home = () => {
+const Home = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
   const router = useRouter();
   // const { roomId } = router.query;
@@ -21,7 +21,7 @@ const Home = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [connected, setConnected] = useState<boolean>(false);
   const [messageText, setMessageText] = useState<string>(``);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(msg);
   const [username, setUsername] = useState<string>(`anonymous`);
   const { data: session } = useSession();
 
@@ -43,10 +43,6 @@ const Home = () => {
         },
       ]);
     });
-    fetch(`/api/messages`)
-      .then((res) => res.json())
-      .then((res) => setMessages(res.data))
-      .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
@@ -54,6 +50,27 @@ const Home = () => {
       setUsername(session!.user!.name);
     }
   }, [session]);
+
+  /* The POST method adds a new entry in the mongodb database. */
+  const postData = async (form: Message) => {
+    try {
+      const res = await fetch(`/api/messages`, {
+        method: `POST`,
+        headers: {
+          Accept: `application/json`,
+          'Content-Type': `application/json`,
+        },
+        body: JSON.stringify(form),
+      });
+
+      // Throw error with status code in case Fetch API req failed
+      if (!res.ok) {
+        throw new Error(res.status.toString());
+      }
+    } catch (error) {
+      console.log(`failed to update message`);
+    }
+  };
 
   const sendMessage = (messageText: string) => {
     if (!messageText) return;
@@ -63,6 +80,7 @@ const Home = () => {
       roomId,
     };
     socket.emit(`message`, message, roomId);
+    postData(message);
     setMessageText(``);
     inputRef?.current?.focus();
   };
@@ -112,10 +130,10 @@ export async function getServerSideProps() {
   const res = await Message.find({});
   const messages = res.map((doc) => {
     const message = doc.toObject();
-    message._id = message._id.toString();
-    return message;
+    message._id = message._id?.toString();
+    return JSON.parse(JSON.stringify(message));
   });
-  return { props: { messages: messages } };
+  return { props: { msg: messages } };
 }
 
 export default Home;
