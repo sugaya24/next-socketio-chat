@@ -4,6 +4,8 @@ import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import dbConnect from '@/lib/dbConnect';
+import Message from '@/models/Message';
 
 export interface Message {
   username: string;
@@ -41,6 +43,10 @@ const Home = () => {
         },
       ]);
     });
+    fetch(`/api/messages`)
+      .then((res) => res.json())
+      .then((res) => setMessages(res.data))
+      .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
@@ -99,5 +105,17 @@ const Home = () => {
     </div>
   );
 };
+
+export async function getServerSideProps() {
+  await dbConnect();
+
+  const res = await Message.find({});
+  const messages = res.map((doc) => {
+    const message = doc.toObject();
+    message._id = message._id.toString();
+    return message;
+  });
+  return { props: { messages: messages } };
+}
 
 export default Home;
