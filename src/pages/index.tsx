@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/router';
+import Sidebar from '@/components/Sidebar';
 import { useSession } from 'next-auth/react';
 import Message from '@/models/Message';
 
@@ -26,12 +27,9 @@ const Home = ({ msg }: any) => {
   const { data: session } = useSession();
 
   useEffect((): any => {
-    // if (!roomId) return;
-    socket.emit(`join`, roomId);
     socket.on(`connect`, () => {
-      console.log(`socket connected`);
-      setConnected(true);
       socket.emit(`join`, roomId);
+      setConnected(true);
     });
     socket.on(`message`, (data: Message) => {
       console.log(`send message`);
@@ -78,7 +76,6 @@ const Home = ({ msg }: any) => {
     const message = {
       messageText,
       username,
-      roomId,
     };
     socket.emit(`message`, message, roomId);
     postData(message);
@@ -87,7 +84,7 @@ const Home = ({ msg }: any) => {
   };
 
   return (
-    <div>
+    <Box h={`100%`}>
       <Head>
         <title>TypeScript starter for Next.js</title>
         <meta
@@ -97,31 +94,37 @@ const Home = ({ msg }: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Container>
-        <Heading>Next.js + Socket.io Chat App</Heading>
-        <Input
-          ref={inputRef}
-          value={messageText}
-          disabled={!connected}
-          onChange={(e) => setMessageText(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === `Enter`) {
-              sendMessage(messageText);
-            }
-          }}
-        />
-        <Button onClick={() => sendMessage(messageText)}>SEND</Button>
-        {messages.length ? (
-          messages.map((message, i) => (
-            <Box key={i}>
-              {message.username}: {message.messageText}@{roomId}
-            </Box>
-          ))
-        ) : (
-          <Box>messages don&apos;t exist yet.</Box>
-        )}
+      <Container h={`100%`} display={`flex`} flexDir={`row`}>
+        <Box w={`30%`} h={`100%`} mr={`4`}>
+          <Sidebar />
+        </Box>
+
+        <Box w={`70%`}>
+          <Heading>Next.js + Socket.io Chat App</Heading>
+          <Input
+            ref={inputRef}
+            value={messageText}
+            disabled={!connected}
+            onChange={(e) => setMessageText(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === `Enter`) {
+                sendMessage(messageText);
+              }
+            }}
+          />
+          <Button onClick={() => sendMessage(messageText)}>SEND</Button>
+          {messages.length ? (
+            messages.map((message, i) => (
+              <Box key={i}>
+                {message.username}: {message.messageText}
+              </Box>
+            ))
+          ) : (
+            <Box>messages don&apos;t exist yet.</Box>
+          )}
+        </Box>
       </Container>
-    </div>
+    </Box>
   );
 };
 

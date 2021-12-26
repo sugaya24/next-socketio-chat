@@ -23,14 +23,15 @@ app.prepare().then(async () => {
   io.on(`connection`, (socket: Socket) => {
     socket.on(`join`, (roomId) => {
       socket.join(roomId);
-      console.log(`joined room ${roomId}!`);
     });
     socket.on(`message`, (data: Message, roomId) => {
-      console.log(`rooms: `, socket.rooms);
       io.to(roomId).emit(`message`, {
         messageText: data.messageText,
         username: data.username,
       });
+    });
+    socket.on(`disconnect`, (reason) => {
+      console.log(`detected user disconnect: `, reason);
     });
   });
 
