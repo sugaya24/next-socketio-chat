@@ -36,7 +36,5 @@ app.prepare().then(async () => {
   });
 
   expressApp.all(`*`, (req: NextApiRequest, res: any) => handle(req, res));
-  server.listen(port, () => {
-    console.log(`server is running...`);
-  });
+  server.listen(port, () => console.log(`server is running at port: ${port}`));
 });

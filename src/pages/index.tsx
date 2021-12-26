@@ -5,21 +5,25 @@ import { io } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import Sidebar from '@/components/Sidebar';
 import { useSession } from 'next-auth/react';
+import Message from '@/models/Message';
+import { postData } from '@/lib/postData';
 
 export interface Message {
   username: string;
   messageText: string;
   id?: string;
+  roomId: string;
 }
 
-const Home = () => {
+const Home = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
   const router = useRouter();
+  // const { roomId } = router.query;
   const roomId = `home`;
   const inputRef = useRef<HTMLInputElement>(null);
   const [connected, setConnected] = useState<boolean>(false);
   const [messageText, setMessageText] = useState<string>(``);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(msg);
   const [username, setUsername] = useState<string>(`anonymous`);
   const { data: session } = useSession();
 
@@ -35,6 +39,7 @@ const Home = () => {
         {
           username: data.username,
           messageText: data.messageText,
+          roomId: roomId,
         },
       ]);
     });
@@ -51,8 +56,10 @@ const Home = () => {
     const message = {
       messageText,
       username,
+      roomId,
     };
     socket.emit(`message`, message, roomId);
+    postData(message);
     setMessageText(``);
     inputRef?.current?.focus();
   };
@@ -101,5 +108,11 @@ const Home = () => {
     </Box>
   );
 };
+
+export async function getServerSideProps() {
+  const res = await fetch(`http://localhost:3000/api/messages`);
+  const msg = await res.json();
+  return { props: { msg: msg.data } };
+}
 
 export default Home;
