@@ -5,10 +5,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { Message } from '..';
 import { useSession } from 'next-auth/react';
+import { postData } from '@/lib/postData';
+import { getAsString } from '@/lib/getAsString';
 
-const RoomPage = () => {
+const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(msg);
   const [username, setUsername] = useState<string>(`anonymous`);
   const [messageText, setMessageText] = useState<string>(``);
   const [connected, setConnected] = useState<boolean>(false);
@@ -28,6 +30,7 @@ const RoomPage = () => {
         {
           username: data.username,
           messageText: data.messageText,
+          roomId: getAsString(roomId!),
         },
       ]);
     });
@@ -37,7 +40,7 @@ const RoomPage = () => {
     if (!roomId) return;
     socket.emit(`join`, roomId);
     // load messages
-    setMessages([]);
+    setMessages(msg);
   }, [roomId]);
 
   useEffect(() => {
@@ -51,9 +54,10 @@ const RoomPage = () => {
     const message = {
       messageText,
       username,
-      roomId,
+      roomId: getAsString(roomId!),
     };
     socket.emit(`message`, message, roomId);
+    postData(message);
     setMessageText(``);
     inputRef?.current?.focus();
   };
@@ -91,5 +95,12 @@ const RoomPage = () => {
     </Container>
   );
 };
+
+export async function getServerSideProps(context: any) {
+  const roomId = context.params.roomId;
+  const res = await fetch(`http://localhost:3000/api/messages/${roomId}`);
+  const msg = await res.json();
+  return { props: { msg: msg.data } };
+}
 
 export default RoomPage;

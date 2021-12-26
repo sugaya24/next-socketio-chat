@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Sidebar from '@/components/Sidebar';
 import { useSession } from 'next-auth/react';
 import Message from '@/models/Message';
+import { postData } from '@/lib/postData';
 
 export interface Message {
   username: string;
@@ -50,32 +51,12 @@ const Home = ({ msg }: any) => {
     }
   }, [session]);
 
-  /* The POST method adds a new entry in the mongodb database. */
-  const postData = async (form: Message) => {
-    try {
-      const res = await fetch(`/api/messages`, {
-        method: `POST`,
-        headers: {
-          Accept: `application/json`,
-          'Content-Type': `application/json`,
-        },
-        body: JSON.stringify(form),
-      });
-
-      // Throw error with status code in case Fetch API req failed
-      if (!res.ok) {
-        throw new Error(res.status.toString());
-      }
-    } catch (error) {
-      console.log(`failed to update message`);
-    }
-  };
-
   const sendMessage = (messageText: string) => {
     if (!messageText) return;
     const message = {
       messageText,
       username,
+      roomId,
     };
     socket.emit(`message`, message, roomId);
     postData(message);
@@ -128,7 +109,7 @@ const Home = ({ msg }: any) => {
   );
 };
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps() {
   const res = await fetch(`http://localhost:3000/api/messages`);
   const msg = await res.json();
   return { props: { msg: msg.data } };
