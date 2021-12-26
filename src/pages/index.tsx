@@ -4,20 +4,20 @@ import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import dbConnect from '@/lib/dbConnect';
 import Message from '@/models/Message';
 
 export interface Message {
   username: string;
   messageText: string;
   id?: string;
+  roomId: string;
 }
 
 const Home = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
   const router = useRouter();
   // const { roomId } = router.query;
-  const roomId = `room1`;
+  const roomId = `home`;
   const inputRef = useRef<HTMLInputElement>(null);
   const [connected, setConnected] = useState<boolean>(false);
   const [messageText, setMessageText] = useState<string>(``);
@@ -40,6 +40,7 @@ const Home = ({ msg }: any) => {
         {
           username: data.username,
           messageText: data.messageText,
+          roomId: roomId,
         },
       ]);
     });
@@ -124,16 +125,10 @@ const Home = ({ msg }: any) => {
   );
 };
 
-export async function getServerSideProps() {
-  await dbConnect();
-
-  const res = await Message.find({});
-  const messages = res.map((doc) => {
-    const message = doc.toObject();
-    message._id = message._id?.toString();
-    return JSON.parse(JSON.stringify(message));
-  });
-  return { props: { msg: messages } };
+export async function getServerSideProps(context: any) {
+  const res = await fetch(`http://localhost:3000/api/messages`);
+  const msg = await res.json();
+  return { props: { msg: msg.data } };
 }
 
 export default Home;

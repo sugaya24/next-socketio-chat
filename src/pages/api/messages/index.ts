@@ -13,8 +13,13 @@ export default async function handler(
   switch (method) {
     case `GET`:
       try {
-        const messages = await Message.find({});
-        res.status(200).json({ success: true, data: messages });
+        const data = await Message.find({ roomId: `home` });
+        const messages = data.map((doc) => {
+          const message = doc.toObject();
+          message._id = message._id?.toString();
+          return JSON.parse(JSON.stringify(message));
+        });
+        res.status(200).json({ sucess: true, data: messages });
       } catch (error) {
         res.status(400).json({ success: false });
       }
