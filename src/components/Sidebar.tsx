@@ -1,21 +1,48 @@
 import React from 'react';
-import { Box, List, ListItem } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  List,
+  ListItem,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 const Sidebar = () => {
   const router = useRouter();
 
-  const click = (room: string) => {
-    console.log(`click`);
+  const roomHandler = (room: string) => {
     router.push(`/room/${room}`);
   };
 
+  const bg = useColorModeValue(`gray.200`, `gray.700`);
+
+  const ROOMS = [
+    {
+      name: `List1`,
+    },
+    {
+      name: `List2`,
+    },
+    {
+      name: `List3`,
+    },
+  ];
+
   return (
-    <Box h={`100%`} bgColor={`gray.300`}>
+    <Box h={`100%`} bg={bg}>
+      <Heading as={`h2`}>Rooms</Heading>
       <List>
-        <ListItem onClick={() => click(`List1`)}>List1</ListItem>
-        <ListItem onClick={() => click(`List2`)}>List2</ListItem>
-        <ListItem onClick={() => click(`List3`)}>List3</ListItem>
+        {ROOMS.map((room) => (
+          <ListItem
+            key={room.name}
+            m={`2`}
+            onClick={() => roomHandler(room.name)}
+            cursor={`pointer`}
+          >
+            {room.name}
+          </ListItem>
+        ))}
       </List>
     </Box>
   );

@@ -1,5 +1,14 @@
 import Sidebar from '@/components/Sidebar';
-import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  calc,
+  Container,
+  Heading,
+  Input,
+  InputGroup,
+  InputRightAddon,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
@@ -7,6 +16,8 @@ import { Message } from '..';
 import { useSession } from 'next-auth/react';
 import { postData } from '@/lib/postData';
 import { getAsString } from '@/lib/getAsString';
+import { FaHashtag } from 'react-icons/fa';
+import { BiSend } from 'react-icons/bi';
 
 const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
@@ -63,36 +74,55 @@ const RoomPage = ({ msg }: any) => {
   };
 
   return (
-    <Container h={`100%`} display={`flex`} flexDir={`row`}>
-      <Box h={`100%`} w={`30%`} mr={`4`}>
+    <Box h={`calc(100% - 63px)`} maxW={`100%`} display={`flex`} flexDir={`row`}>
+      <Box h={`100%`} w={`30%`} className={`sidebar`}>
         <Sidebar />
       </Box>
 
-      <Box h={`100%`} w={`70%`}>
-        <Heading>Room: {roomId}</Heading>
-        <Input
-          ref={inputRef}
-          value={messageText}
-          disabled={!connected}
-          onChange={(e) => setMessageText(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === `Enter`) {
-              sendMessage(messageText);
-            }
-          }}
-        />
-        <Button onClick={() => sendMessage(messageText)}>SEND</Button>
-        {messages.length ? (
-          messages.map((message, i) => (
-            <Box key={i}>
-              {message.username}: {message.messageText}
-            </Box>
-          ))
-        ) : (
-          <Box>messages don&apos;t exist yet.</Box>
-        )}
+      <Box
+        className={`main-content`}
+        display={`flex`}
+        flexDir={`column`}
+        h={`100%`}
+        w={`70%`}
+      >
+        <Box className={`heading`} display={`flex`} alignItems={`center`}>
+          <Box p={`2`}>
+            <FaHashtag size={`24px`} />
+          </Box>
+          <Heading>{roomId}</Heading>
+        </Box>
+        <Box className={`message-list`} overflowY={`auto`} flex={`1`}>
+          {messages.length ? (
+            messages.map((message, i) => (
+              <Box key={i} pb={10}>
+                {message.username}: {message.messageText}
+              </Box>
+            ))
+          ) : (
+            <Box>messages don&apos;t exist yet.</Box>
+          )}
+        </Box>
+        <Box w={`100%`} p={`2`} display={`flex`}>
+          <InputGroup>
+            <Input
+              ref={inputRef}
+              value={messageText}
+              disabled={!connected}
+              onChange={(e) => setMessageText(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === `Enter`) {
+                  sendMessage(messageText);
+                }
+              }}
+            />
+            <InputRightAddon onClick={() => sendMessage(messageText)}>
+              <BiSend />
+            </InputRightAddon>
+          </InputGroup>
+        </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };
 
