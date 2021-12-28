@@ -16,12 +16,17 @@ import { getAsString } from '@/lib/getAsString';
 import { FaHashtag } from 'react-icons/fa';
 import { BiSend } from 'react-icons/bi';
 import Message from '@/components/Message';
+import { v4 as uuidv4 } from 'uuid';
 
 const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<IMessage[]>(msg);
   const [username, setUsername] = useState<string>(`anonymous`);
+  const [UID, setUID] = useState<string>(uuidv4());
+  const [imageSrc, setImageSrc] = useState<string>(
+    `https://avatars.dicebear.com/api/open-peeps/${UID}.svg`,
+  );
   const [messageText, setMessageText] = useState<string>(``);
   const [connected, setConnected] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,6 +46,7 @@ const RoomPage = ({ msg }: any) => {
           username: data.username,
           messageText: data.messageText,
           roomId: getAsString(roomId!),
+          imageSrc: data.imageSrc,
         },
       ]);
     });
@@ -58,6 +64,9 @@ const RoomPage = ({ msg }: any) => {
     if (session?.user?.name) {
       setUsername(session!.user!.name);
     }
+    if (session?.user?.image) {
+      setImageSrc(session.user.image);
+    }
   }, [session]);
 
   useEffect(() => {
@@ -70,6 +79,7 @@ const RoomPage = ({ msg }: any) => {
       messageText,
       username,
       roomId: getAsString(roomId!),
+      imageSrc,
     };
     socket.emit(`message`, message, roomId);
     postData(message);
@@ -104,6 +114,7 @@ const RoomPage = ({ msg }: any) => {
                   username={message.username}
                   messageText={message.messageText}
                   createdAt={message.createdAt}
+                  imageSrc={message.imageSrc}
                 />
               </Box>
             ))

@@ -15,6 +15,7 @@ export interface IMessage {
   roomId: string;
   createdAt?: string;
   updatedAt?: string;
+  imageSrc?: string;
 }
 
 const Home = ({ msg }: any) => {

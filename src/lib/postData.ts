@@ -1,7 +1,7 @@
-import { Message } from '@/pages';
+import { IMessage } from '@/pages';
 
 /* The POST method adds a new entry in the mongodb database. */
-export const postData = async (form: Message) => {
+export const postData = async (form: IMessage) => {
   try {
     const res = await fetch(`/api/messages`, {
       method: `POST`,

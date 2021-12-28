@@ -4,6 +4,7 @@ export interface IMessage extends Document {
   username: string;
   messageText: string;
   roomId: string;
+  imageSrc: string;
 }
 
 const messageSchema: Schema = new mongoose.Schema(
@@ -19,6 +20,10 @@ const messageSchema: Schema = new mongoose.Schema(
     roomId: {
       type: String,
       required: [true, `Please add roomId`],
+    },
+    imageSrc: {
+      type: String,
+      required: [true, `Please add imageSrc`],
     },
   },
   { timestamps: true },
