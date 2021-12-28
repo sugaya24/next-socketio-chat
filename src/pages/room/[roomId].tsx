@@ -1,9 +1,6 @@
 import Sidebar from '@/components/Sidebar';
 import {
   Box,
-  Button,
-  calc,
-  Container,
   Heading,
   Input,
   InputGroup,
@@ -21,6 +18,7 @@ import { BiSend } from 'react-icons/bi';
 
 const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
+  const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>(msg);
   const [username, setUsername] = useState<string>(`anonymous`);
   const [messageText, setMessageText] = useState<string>(``);
@@ -45,6 +43,7 @@ const RoomPage = ({ msg }: any) => {
         },
       ]);
     });
+    scrollBottomRef.current?.scrollIntoView();
   }, []);
 
   useEffect(() => {
@@ -59,6 +58,10 @@ const RoomPage = ({ msg }: any) => {
       setUsername(session!.user!.name);
     }
   }, [session]);
+
+  useEffect(() => {
+    scrollBottomRef.current?.scrollIntoView({ behavior: `smooth` });
+  }, [messages]);
 
   const sendMessage = (messageText: string) => {
     if (!messageText) return;
@@ -102,6 +105,7 @@ const RoomPage = ({ msg }: any) => {
           ) : (
             <Box>messages don&apos;t exist yet.</Box>
           )}
+          <div ref={scrollBottomRef} />
         </Box>
         <Box w={`100%`} p={`2`} display={`flex`}>
           <InputGroup>
