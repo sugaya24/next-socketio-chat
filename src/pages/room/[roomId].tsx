@@ -9,7 +9,7 @@ import {
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
-import { Message } from '..';
+import { IMessage } from '..';
 import { useSession } from 'next-auth/react';
 import { postData } from '@/lib/postData';
 import { getAsString } from '@/lib/getAsString';
@@ -20,7 +20,7 @@ import Message from '@/components/Message';
 const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
   const scrollBottomRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<Message[]>(msg);
+  const [messages, setMessages] = useState<IMessage[]>(msg);
   const [username, setUsername] = useState<string>(`anonymous`);
   const [messageText, setMessageText] = useState<string>(``);
   const [connected, setConnected] = useState<boolean>(false);
@@ -34,7 +34,7 @@ const RoomPage = ({ msg }: any) => {
       setConnected(true);
     });
 
-    socket.on(`message`, (data: Message) => {
+    socket.on(`message`, (data: IMessage) => {
       setMessages((prev) => [
         ...prev,
         {
