@@ -2,11 +2,18 @@ import React from 'react';
 import {
   Box,
   Heading,
+  HStack,
   List,
   ListItem,
+  Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { AiFillCode } from 'react-icons/ai';
+import { MdHomeWork, MdSportsHockey, MdFoodBank, MdPets } from 'react-icons/md';
+import { BsMusicNoteBeamed } from 'react-icons/bs';
+import { BiCameraMovie, BiBookOpen } from 'react-icons/bi';
+import { FaPlane } from 'react-icons/fa';
 
 const Sidebar = () => {
   const router = useRouter();
@@ -15,32 +22,65 @@ const Sidebar = () => {
     router.push(`/room/${room}`);
   };
 
-  const bg = useColorModeValue(`gray.200`, `gray.700`);
+  const bg = useColorModeValue(`gray.100`, `gray.900`);
 
   const ROOMS = [
     {
-      name: `List1`,
+      name: `Programming`,
+      icon: <AiFillCode />,
     },
     {
-      name: `List2`,
+      name: `Job`,
+      icon: <MdHomeWork />,
     },
     {
-      name: `List3`,
+      name: `Music`,
+      icon: <BsMusicNoteBeamed />,
+    },
+    {
+      name: `Movies`,
+      icon: <BiCameraMovie />,
+    },
+    {
+      name: `Books`,
+      icon: <BiBookOpen />,
+    },
+    {
+      name: `Travel`,
+      icon: <FaPlane />,
+    },
+    {
+      name: `Sports`,
+      icon: <MdSportsHockey />,
+    },
+    {
+      name: `Food`,
+      icon: <MdFoodBank />,
+    },
+    {
+      name: `Pets`,
+      icon: <MdPets />,
     },
   ];
 
   return (
     <Box h={`100%`} bg={bg}>
-      <Heading as={`h2`}>Rooms</Heading>
+      <Heading as={`h4`} p={`4`} size={`lg`}>
+        Rooms
+      </Heading>
       <List>
         {ROOMS.map((room) => (
           <ListItem
             key={room.name}
-            m={`2`}
+            mx={`4`}
+            my={`4`}
             onClick={() => roomHandler(room.name)}
             cursor={`pointer`}
           >
-            {room.name}
+            <HStack>
+              {room.icon}
+              <Text>{room.name}</Text>
+            </HStack>
           </ListItem>
         ))}
       </List>
