@@ -15,6 +15,7 @@ import { postData } from '@/lib/postData';
 import { getAsString } from '@/lib/getAsString';
 import { FaHashtag } from 'react-icons/fa';
 import { BiSend } from 'react-icons/bi';
+import Message from '@/components/Message';
 
 const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
@@ -98,8 +99,12 @@ const RoomPage = ({ msg }: any) => {
         <Box className={`message-list`} overflowY={`auto`} flex={`1`}>
           {messages.length ? (
             messages.map((message, i) => (
-              <Box key={i} pb={10}>
-                {message.username}: {message.messageText}
+              <Box key={i} mx={`4`} my={`6`}>
+                <Message
+                  username={message.username}
+                  messageText={message.messageText}
+                  createdAt={message.createdAt}
+                />
               </Box>
             ))
           ) : (
