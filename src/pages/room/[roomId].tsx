@@ -82,7 +82,7 @@ const RoomPage = ({ msg }: any) => {
       roomId: getAsString(roomId!),
       imageSrc,
     };
-    socket.emit(`message`, message);
+    socket.emit(`message`, message, roomId);
     postData(message);
     setMessageText(``);
     inputRef?.current?.focus();
