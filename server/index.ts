@@ -32,6 +32,7 @@ app.prepare().then(async () => {
       io.to(roomId).emit(`message`, {
         messageText: data.messageText,
         username: data.username,
+        imageSrc: data.imageSrc,
       });
     });
     socket.on(`disconnect`, (reason) => {

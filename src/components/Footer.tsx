@@ -1,18 +1,13 @@
 import {
   Box,
   Center,
-  chakra,
   Container,
-  Link,
   Stack,
   Text,
   useColorModeValue,
-  VisuallyHidden,
 } from '@chakra-ui/react';
-import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
-import { ReactNode } from 'react';
 
-export default function SmallCentered() {
+export default function Footer() {
   return (
     <Box
       bg={useColorModeValue(`gray.50`, `gray.900`)}
