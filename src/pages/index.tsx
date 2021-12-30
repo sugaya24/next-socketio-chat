@@ -8,11 +8,14 @@ import { useSession } from 'next-auth/react';
 import Message from '@/models/Message';
 import { postData } from '@/lib/postData';
 
-export interface Message {
+export interface IMessage {
   username: string;
   messageText: string;
   id?: string;
   roomId: string;
+  createdAt?: string;
+  updatedAt?: string;
+  imageSrc?: string;
 }
 
 const Home = ({ msg }: any) => {
@@ -23,7 +26,7 @@ const Home = ({ msg }: any) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [connected, setConnected] = useState<boolean>(false);
   const [messageText, setMessageText] = useState<string>(``);
-  const [messages, setMessages] = useState<Message[]>(msg);
+  const [messages, setMessages] = useState<IMessage[]>(msg);
   const [username, setUsername] = useState<string>(`anonymous`);
   const { data: session } = useSession();
 
@@ -32,7 +35,7 @@ const Home = ({ msg }: any) => {
       socket.emit(`join`, roomId);
       setConnected(true);
     });
-    socket.on(`message`, (data: Message) => {
+    socket.on(`message`, (data: IMessage) => {
       console.log(`send message`);
       setMessages((prev) => [
         ...prev,
@@ -75,7 +78,7 @@ const Home = ({ msg }: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Container h={`100%`} display={`flex`} flexDir={`row`}>
+      <Container h={`100%`} w={100} display={`flex`} flexDir={`row`}>
         <Box w={`30%`} h={`100%`} mr={`4`}>
           <Sidebar />
         </Box>
