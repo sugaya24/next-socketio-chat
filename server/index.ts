@@ -2,7 +2,7 @@ import { Server, createServer } from 'http';
 import next, { NextApiHandler, NextApiRequest } from 'next';
 import express, { Express, Request, Response } from 'express';
 import { Server as socketioServer, Socket } from 'socket.io';
-import { Message } from '@/pages';
+import { IMessage } from '@/pages';
 
 const port = parseInt(process.env.PORT || `3000`, 10);
 const dev = process.env.NODE_ENV !== `production`;
@@ -22,9 +22,13 @@ app.prepare().then(async () => {
 
   io.on(`connection`, (socket: Socket) => {
     socket.on(`join`, (roomId) => {
+      // leave other rooms before joining new room
+      for (const roomId of socket.rooms) {
+        socket.leave(roomId);
+      }
       socket.join(roomId);
     });
-    socket.on(`message`, (data: Message, roomId) => {
+    socket.on(`message`, (data: IMessage, roomId) => {
       io.to(roomId).emit(`message`, {
         messageText: data.messageText,
         username: data.username,

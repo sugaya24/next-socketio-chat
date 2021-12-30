@@ -22,6 +22,7 @@ const RoomPage = ({ msg }: any) => {
 
   useEffect(() => {
     socket.on(`connect`, () => {
+      socket.emit(`join`, roomId);
       setConnected(true);
     });
 
@@ -57,7 +58,7 @@ const RoomPage = ({ msg }: any) => {
       username,
       roomId: getAsString(roomId!),
     };
-    socket.emit(`message`, message, roomId);
+    socket.emit(`message`, message);
     postData(message);
     setMessageText(``);
     inputRef?.current?.focus();
