@@ -36,6 +36,7 @@ const RoomPage = ({ msg }: any) => {
 
   useEffect(() => {
     socket.on(`connect`, () => {
+      socket.emit(`join`, roomId);
       setConnected(true);
     });
 

@@ -22,6 +22,10 @@ app.prepare().then(async () => {
 
   io.on(`connection`, (socket: Socket) => {
     socket.on(`join`, (roomId) => {
+      // leave other rooms before joining new room
+      for (const roomId of socket.rooms) {
+        socket.leave(roomId);
+      }
       socket.join(roomId);
     });
     socket.on(`message`, (data: IMessage, roomId) => {
