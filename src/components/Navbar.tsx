@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
+import Link from 'next/link';
 import {
   Box,
   Flex,
   Avatar,
-  Link,
   Button,
   Menu,
   MenuButton,
@@ -15,9 +14,13 @@ import {
   Stack,
   useColorMode,
   Center,
+  Heading,
+  HStack,
+  Icon,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { BsChatRightDotsFill } from 'react-icons/bs';
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -37,7 +40,12 @@ export default function Navbar() {
     <>
       <Box bg={useColorModeValue(`gray.100`, `gray.900`)} px={4}>
         <Flex h={16} alignItems={`center`} justifyContent={`space-between`}>
-          <Box>Logo</Box>
+          <Link href={`/`} passHref>
+            <HStack>
+              <Icon as={BsChatRightDotsFill} boxSize={`6`} />
+              <Heading>Chat App</Heading>
+            </HStack>
+          </Link>
 
           <Flex alignItems={`center`}>
             <Stack direction={`row`} spacing={7}>
