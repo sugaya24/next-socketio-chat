@@ -19,46 +19,46 @@ const Sidebar = () => {
   const router = useRouter();
 
   const roomHandler = (room: string) => {
-    router.push(`/room/${room}`);
+    router.push(`/room/[roomId]`, `/room/${room}`);
   };
 
   const bg = useColorModeValue(`gray.100`, `gray.900`);
 
   const ROOMS = [
     {
-      name: `Programming`,
+      name: `programming`,
       icon: <AiFillCode />,
     },
     {
-      name: `Job`,
+      name: `job`,
       icon: <MdHomeWork />,
     },
     {
-      name: `Music`,
+      name: `music`,
       icon: <BsMusicNoteBeamed />,
     },
     {
-      name: `Movies`,
+      name: `movies`,
       icon: <BiCameraMovie />,
     },
     {
-      name: `Books`,
+      name: `books`,
       icon: <BiBookOpen />,
     },
     {
-      name: `Travel`,
+      name: `travel`,
       icon: <FaPlane />,
     },
     {
-      name: `Sports`,
+      name: `sports`,
       icon: <MdSportsHockey />,
     },
     {
-      name: `Food`,
+      name: `food`,
       icon: <MdFoodBank />,
     },
     {
-      name: `Pets`,
+      name: `pets`,
       icon: <MdPets />,
     },
   ];
