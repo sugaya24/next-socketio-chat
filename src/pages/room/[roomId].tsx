@@ -1,21 +1,15 @@
-import Sidebar from '@/components/Sidebar';
-import {
-  Box,
-  Heading,
-  Input,
-  InputGroup,
-  InputRightAddon,
-} from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
-import { IMessage } from '..';
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import Message from '@/components/Message';
+import Sidebar from '@/components/Sidebar';
+import InputForm from '@/components/Input';
 import { postData } from '@/lib/postData';
 import { getAsString } from '@/lib/getAsString';
+import { IMessage } from '..';
+import { Box, Heading } from '@chakra-ui/react';
 import { FaHashtag } from 'react-icons/fa';
-import { BiSend } from 'react-icons/bi';
-import Message from '@/components/Message';
+import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
 const RoomPage = ({ msg }: any) => {
@@ -125,22 +119,13 @@ const RoomPage = ({ msg }: any) => {
           <div ref={scrollBottomRef} />
         </Box>
         <Box w={`100%`} p={`2`} display={`flex`}>
-          <InputGroup>
-            <Input
-              ref={inputRef}
-              value={messageText}
-              disabled={!connected}
-              onChange={(e) => setMessageText(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === `Enter`) {
-                  sendMessage(messageText);
-                }
-              }}
-            />
-            <InputRightAddon onClick={() => sendMessage(messageText)}>
-              <BiSend />
-            </InputRightAddon>
-          </InputGroup>
+          <InputForm
+            inputRef={inputRef}
+            messageText={messageText}
+            connected={connected}
+            sendMessage={sendMessage}
+            setMessageText={setMessageText}
+          />
         </Box>
       </Box>
     </Box>
