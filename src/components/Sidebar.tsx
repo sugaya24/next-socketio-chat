@@ -9,11 +9,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { AiFillCode } from 'react-icons/ai';
-import { MdHomeWork, MdSportsHockey, MdFoodBank, MdPets } from 'react-icons/md';
-import { BsMusicNoteBeamed } from 'react-icons/bs';
-import { BiCameraMovie, BiBookOpen } from 'react-icons/bi';
-import { FaPlane } from 'react-icons/fa';
+import { ROOMS } from '@/lib/roomsData';
 
 const Sidebar = () => {
   const router = useRouter();
@@ -23,45 +19,6 @@ const Sidebar = () => {
   };
 
   const bg = useColorModeValue(`gray.100`, `gray.900`);
-
-  const ROOMS = [
-    {
-      name: `programming`,
-      icon: <AiFillCode />,
-    },
-    {
-      name: `job`,
-      icon: <MdHomeWork />,
-    },
-    {
-      name: `music`,
-      icon: <BsMusicNoteBeamed />,
-    },
-    {
-      name: `movies`,
-      icon: <BiCameraMovie />,
-    },
-    {
-      name: `books`,
-      icon: <BiBookOpen />,
-    },
-    {
-      name: `travel`,
-      icon: <FaPlane />,
-    },
-    {
-      name: `sports`,
-      icon: <MdSportsHockey />,
-    },
-    {
-      name: `food`,
-      icon: <MdFoodBank />,
-    },
-    {
-      name: `pets`,
-      icon: <MdPets />,
-    },
-  ];
 
   return (
     <Box h={`100%`} bg={bg}>

@@ -3930,6 +3930,11 @@ inquirer@6.5.2:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
+inspirational-quotes@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/inspirational-quotes/-/inspirational-quotes-2.0.1.tgz#ef4c6215c81cdced7603e5d1b039feba07080e15"
+  integrity sha512-IYJEdSUphF4HOoOiABua2l7aUZ2OBTc/NpihPuENF3ieXEBuywOTtYle7zzvZfEJKouG9utOwQpMQtm0GIB2BQ==
+
 internal-slot@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/internal-slot/-/internal-slot-1.0.3.tgz#7347e307deeea2faac2ac6205d4bc7d34967f59c"

@@ -17,10 +17,13 @@ import {
   Heading,
   HStack,
   Icon,
+  IconButton,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { BsChatRightDotsFill } from 'react-icons/bs';
+import { FaArrowLeft } from 'react-icons/fa';
+import DrawerSidebar from './Drawer';
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -39,11 +42,22 @@ export default function Navbar() {
   return (
     <>
       <Box bg={useColorModeValue(`gray.100`, `gray.900`)} px={4}>
+        <DrawerSidebar onClose={onClose} isOpen={isOpen} />
         <Flex h={16} alignItems={`center`} justifyContent={`space-between`}>
+          <Box display={{ base: `block`, md: `none` }}>
+            <IconButton
+              aria-label="show rooms"
+              icon={<FaArrowLeft />}
+              onClick={onOpen}
+            />
+          </Box>
+
           <Link href={`/`} passHref>
-            <HStack>
+            <HStack cursor={`pointer`}>
               <Icon as={BsChatRightDotsFill} boxSize={`6`} />
-              <Heading>Chat App</Heading>
+              <Heading display={{ base: `none`, md: `block` }}>
+                Chat App
+              </Heading>
             </HStack>
           </Link>
 

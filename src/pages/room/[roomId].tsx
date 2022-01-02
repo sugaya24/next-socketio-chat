@@ -83,8 +83,18 @@ const RoomPage = ({ msg }: any) => {
   };
 
   return (
-    <Box h={`calc(100% - 63px)`} maxW={`100%`} display={`flex`} flexDir={`row`}>
-      <Box h={`100%`} w={`30%`} className={`sidebar`}>
+    <Box
+      h={`calc(100% - 64px)`}
+      w={`100%`}
+      display={`grid`}
+      gridTemplateColumns={{ base: `1fr`, md: `300px auto` }}
+    >
+      <Box
+        display={{ base: `none`, md: `block` }}
+        h={`100%`}
+        maxW={`300px`}
+        className={`sidebar`}
+      >
         <Sidebar />
       </Box>
 
@@ -93,7 +103,6 @@ const RoomPage = ({ msg }: any) => {
         display={`flex`}
         flexDir={`column`}
         h={`100%`}
-        w={`70%`}
       >
         <Box className={`heading`} display={`flex`} alignItems={`center`}>
           <Box p={`2`}>
