@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import { Box, Center, Heading } from '@chakra-ui/react';
-import { io } from 'socket.io-client';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
-import { postData } from '@/lib/postData';
+import { Box, Center, Text, Container } from '@chakra-ui/react';
 import Sidebar from '@/components/Sidebar';
-import DrawerSidebar from '@/components/Drawer';
-import Message from '@/models/Message';
+import Quote from 'inspirational-quotes';
 
 export interface IMessage {
   username: string;
@@ -20,14 +15,14 @@ export interface IMessage {
 }
 
 const Home = () => {
-  const [username, setUsername] = useState<string>(`anonymous`);
-  const { data: session } = useSession();
+  const [quote, setQuote] = useState<{ text: string; author: string } | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (session?.user?.name) {
-      setUsername(session!.user!.name);
-    }
-  }, [session]);
+    const quote = Quote.getQuote();
+    setQuote(quote);
+  }, []);
 
   return (
     <Box h={`100%`}>
@@ -51,7 +46,12 @@ const Home = () => {
         </Box>
 
         <Center>
-          <Heading>Next.js + Socket.io Chat App</Heading>
+          <Container>
+            <Text textAlign={`center`}>{quote?.text}</Text>
+            <Text textAlign={`center`} color={`GrayText`}>
+              — {quote?.author}
+            </Text>
+          </Container>
         </Center>
       </Box>
     </Box>
