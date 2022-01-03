@@ -18,7 +18,7 @@ const Message = ({ username, imageSrc, createdAt, messageText }: any) => {
               {username}
             </Heading>
             <Text fontSize={`sm`} color={`GrayText`}>
-              {moment(createdAt).format(`dddd, MMM. DD, hh:mm`)}
+              {moment(createdAt).format(`hh:mm A`)}
             </Text>
           </HStack>
           <Box>

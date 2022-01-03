@@ -7,10 +7,12 @@ import InputForm from '@/components/Input';
 import { postData } from '@/lib/postData';
 import { getAsString } from '@/lib/getAsString';
 import { IMessage } from '..';
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, Divider, Heading, HStack, Text } from '@chakra-ui/react';
 import { FaHashtag } from 'react-icons/fa';
 import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
+import generatedItems from '@/lib/groupByDays';
+import moment from 'moment';
 
 const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
@@ -88,6 +90,7 @@ const RoomPage = ({ msg }: any) => {
       w={`100%`}
       display={`grid`}
       gridTemplateColumns={{ base: `1fr`, md: `300px auto` }}
+      gridTemplateRows={`100%`}
     >
       <Box
         display={{ base: `none`, md: `block` }}
@@ -105,25 +108,46 @@ const RoomPage = ({ msg }: any) => {
         h={`100%`}
       >
         <Box className={`heading`} display={`flex`} alignItems={`center`}>
-          <Box p={`2`}>
+          <Box m={`4`}>
             <FaHashtag size={`24px`} />
           </Box>
           <Heading>{roomId}</Heading>
         </Box>
         <Box className={`message-list`} overflowY={`auto`} flex={`1`}>
           {messages.length ? (
-            messages.map((message, i) => (
-              <Box key={i} mx={`4`} my={`6`}>
-                <Message
-                  username={message.username}
-                  messageText={message.messageText}
-                  createdAt={message.createdAt}
-                  imageSrc={message.imageSrc}
-                />
-              </Box>
-            ))
+            generatedItems(messages).map((message, i) => {
+              if (!message.type) {
+                return (
+                  <Box key={i} mx={`4`} mb={`6`}>
+                    <Message
+                      username={message.username}
+                      messageText={message.messageText}
+                      createdAt={message.createdAt}
+                      imageSrc={message.imageSrc}
+                    />
+                  </Box>
+                );
+              } else {
+                return (
+                  <HStack mx={`4`} mb={`6`}>
+                    <Divider />
+                    <Box>
+                      <Text
+                        whiteSpace={`nowrap`}
+                        color={`GrayText`}
+                        fontSize={`sm`}
+                        mx={`2`}
+                      >
+                        {moment(message.date).format(`dddd, MMMM D, YYYY`)}
+                      </Text>
+                    </Box>
+                    <Divider />
+                  </HStack>
+                );
+              }
+            })
           ) : (
-            <Box>messages don&apos;t exist yet.</Box>
+            <Box m={`4`}>messages don&apos;t exist yet.</Box>
           )}
           <div ref={scrollBottomRef} />
         </Box>
