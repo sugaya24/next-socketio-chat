@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { UserContext } from '@/contexts/UserContext';
 import Message from '@/components/Message';
 import Sidebar from '@/components/Sidebar';
 import InputForm from '@/components/Input';
@@ -10,7 +11,6 @@ import { IMessage } from '..';
 import { Box, Divider, Heading, HStack, Text } from '@chakra-ui/react';
 import { FaHashtag } from 'react-icons/fa';
 import { io } from 'socket.io-client';
-import { v4 as uuidv4 } from 'uuid';
 import generatedItems from '@/lib/groupByDays';
 import moment from 'moment';
 
@@ -18,10 +18,9 @@ const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<IMessage[]>(msg);
-  const [username, setUsername] = useState<string>(`anonymous`);
-  const [UID, setUID] = useState<string>(uuidv4());
+  const { username, setUsername, uuid } = useContext(UserContext);
   const [imageSrc, setImageSrc] = useState<string>(
-    `https://avatars.dicebear.com/api/open-peeps/${UID}.svg`,
+    `https://avatars.dicebear.com/api/open-peeps/${uuid}.svg`,
   );
   const [messageText, setMessageText] = useState<string>(``);
   const [connected, setConnected] = useState<boolean>(false);

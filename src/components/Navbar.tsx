@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import Link from 'next/link';
 import {
   Box,
@@ -24,10 +25,13 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { BsChatRightDotsFill } from 'react-icons/bs';
 import { FaArrowLeft } from 'react-icons/fa';
 import DrawerSidebar from './Drawer';
+import { UserContext } from '@/contexts/UserContext';
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const userState = useContext(UserContext);
+  const { username, uuid } = userState;
 
   const { data: session } = useSession();
 
@@ -80,7 +84,7 @@ export default function Navbar() {
                     src={
                       session?.user?.image
                         ? session?.user.image
-                        : `https://avatars.dicebear.com/api/male/username.svg`
+                        : `https://avatars.dicebear.com/api/open-peeps/${uuid}.svg`
                     }
                   />
                 </MenuButton>
@@ -92,18 +96,16 @@ export default function Navbar() {
                       src={
                         session?.user?.image
                           ? session?.user.image
-                          : `https://avatars.dicebear.com/api/male/username.svg`
+                          : `https://avatars.dicebear.com/api/open-peeps/${uuid}.svg`
                       }
                     />
                   </Center>
                   <br />
                   <Center>
-                    <p>Username</p>
+                    <p>{username}</p>
                   </Center>
                   <br />
                   <MenuDivider />
-                  <MenuItem>Your Servers</MenuItem>
-                  <MenuItem>Account Settings</MenuItem>
                   <LoginHandler />
                 </MenuList>
               </Menu>

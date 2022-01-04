@@ -3,6 +3,7 @@ import { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import Layout from '@/components/Layout';
 import { SessionProvider } from 'next-auth/react';
+import UserContextProvider from '@/contexts/UserContext';
 
 export default function MyApp({
   Component,
@@ -11,9 +12,11 @@ export default function MyApp({
   return (
     <SessionProvider session={session}>
       <ChakraProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <UserContextProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </UserContextProvider>
       </ChakraProvider>
     </SessionProvider>
   );
