@@ -13,10 +13,11 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [username, setUsername] = useState(`John Doe`);
+  const [uuid] = useState(uuidv4());
   const value: IUserContext = {
     username,
     setUsername,
-    uuid: uuidv4(),
+    uuid,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
