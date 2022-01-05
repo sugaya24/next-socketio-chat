@@ -13,6 +13,7 @@ import { FaHashtag } from 'react-icons/fa';
 import { io } from 'socket.io-client';
 import generatedItems from '@/lib/groupByDays';
 import moment from 'moment';
+import Head from 'next/head';
 
 const RoomPage = ({ msg }: any) => {
   const [socket, _] = useState(() => io());
@@ -84,83 +85,89 @@ const RoomPage = ({ msg }: any) => {
   };
 
   return (
-    <Box
-      h={`calc(100% - 64px)`}
-      w={`100%`}
-      display={`grid`}
-      gridTemplateColumns={{ base: `1fr`, md: `300px auto` }}
-      gridTemplateRows={`100%`}
-    >
-      <Box
-        display={{ base: `none`, md: `block` }}
-        h={`100%`}
-        maxW={`300px`}
-        className={`sidebar`}
-      >
-        <Sidebar />
-      </Box>
+    <>
+      <Head>
+        <title>{`#${roomId}`}</title>
+      </Head>
 
       <Box
-        className={`main-content`}
-        display={`flex`}
-        flexDir={`column`}
-        h={`100%`}
+        h={`calc(100% - 64px)`}
+        w={`100%`}
+        display={`grid`}
+        gridTemplateColumns={{ base: `1fr`, md: `300px auto` }}
+        gridTemplateRows={`100%`}
       >
-        <Box className={`heading`} display={`flex`} alignItems={`center`}>
-          <Box m={`4`}>
-            <FaHashtag size={`24px`} />
+        <Box
+          display={{ base: `none`, md: `block` }}
+          h={`100%`}
+          maxW={`300px`}
+          className={`sidebar`}
+        >
+          <Sidebar />
+        </Box>
+
+        <Box
+          className={`main-content`}
+          display={`flex`}
+          flexDir={`column`}
+          h={`100%`}
+        >
+          <Box className={`heading`} display={`flex`} alignItems={`center`}>
+            <Box m={`4`}>
+              <FaHashtag size={`24px`} />
+            </Box>
+            <Heading>{roomId}</Heading>
           </Box>
-          <Heading>{roomId}</Heading>
-        </Box>
-        <Box className={`message-list`} overflowY={`auto`} flex={`1`}>
-          {messages.length ? (
-            generatedItems(messages).map((message, i) => {
-              if (!message.type) {
-                return (
-                  <Box key={i} mx={`4`} mb={`6`}>
-                    <Message
-                      username={message.username}
-                      messageText={message.messageText}
-                      createdAt={message.createdAt}
-                      imageSrc={message.imageSrc}
-                    />
-                  </Box>
-                );
-              } else {
-                return (
-                  <HStack mx={`4`} mb={`6`}>
-                    <Divider />
-                    <Box>
-                      <Text
-                        whiteSpace={`nowrap`}
-                        color={`GrayText`}
-                        fontSize={`sm`}
-                        mx={`2`}
-                      >
-                        {moment(message.date).format(`dddd, MMMM D, YYYY`)}
-                      </Text>
+          <Box className={`message-list`} overflowY={`auto`} flex={`1`}>
+            {messages.length ? (
+              generatedItems(messages).map((message, i) => {
+                if (!message.type) {
+                  return (
+                    <Box key={i} mx={`4`} mb={`6`}>
+                      <Message
+                        username={message.username}
+                        messageText={message.messageText}
+                        createdAt={message.createdAt}
+                        imageSrc={message.imageSrc}
+                      />
                     </Box>
-                    <Divider />
-                  </HStack>
-                );
-              }
-            })
-          ) : (
-            <Box m={`4`}>messages don&apos;t exist yet.</Box>
-          )}
-          <div ref={scrollBottomRef} />
-        </Box>
-        <Box w={`100%`} p={`2`} display={`flex`}>
-          <InputForm
-            inputRef={inputRef}
-            messageText={messageText}
-            connected={connected}
-            sendMessage={sendMessage}
-            setMessageText={setMessageText}
-          />
+                  );
+                } else {
+                  return (
+                    <HStack mx={`4`} mb={`6`}>
+                      <Divider />
+                      <Box>
+                        <Text
+                          whiteSpace={`nowrap`}
+                          color={`GrayText`}
+                          fontSize={`sm`}
+                          mx={`2`}
+                        >
+                          {moment(message.date).format(`dddd, MMMM D, YYYY`)}
+                        </Text>
+                      </Box>
+                      <Divider />
+                    </HStack>
+                  );
+                }
+              })
+            ) : (
+              <Box m={`4`}>messages don&apos;t exist yet.</Box>
+            )}
+            <div ref={scrollBottomRef} />
+          </Box>
+          <Box w={`100%`} p={`2`} display={`flex`}>
+            <InputForm
+              inputRef={inputRef}
+              messageText={messageText}
+              connected={connected}
+              sendMessage={sendMessage}
+              setMessageText={setMessageText}
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
