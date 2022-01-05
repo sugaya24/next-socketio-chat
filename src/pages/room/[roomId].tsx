@@ -173,7 +173,7 @@ const RoomPage = ({ msg }: any) => {
 
 export async function getServerSideProps(context: any) {
   const roomId = context.params.roomId;
-  const res = await fetch(`http://localhost:3000/api/messages/${roomId}`);
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/messages/${roomId}`);
   const msg = await res.json();
   return { props: { msg: msg.data } };
 }
