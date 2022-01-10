@@ -1,5 +1,5 @@
 declare module 'inspirational-quotes' {
-  const getQuote: () => {
+  export function getQuote(): {
     text: string;
     author: string;
   };
