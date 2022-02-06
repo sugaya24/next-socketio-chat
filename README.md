@@ -1,6 +1,6 @@
 ## Chat App built with Next.js + Socket.io
 ![next-socketio-chat](https://user-images.githubusercontent.com/13996983/152688140-936eb9f6-f6a2-4f58-8353-489fcb89f44f.png)
-[next-socketio-chat.herokuapp.com/](next-socketio-chat.herokuapp.com/)
+[next-socketio-chat.herokuapp.com](https://next-socketio-chat.herokuapp.com)
 
 ## Features
 
