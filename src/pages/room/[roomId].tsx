@@ -21,7 +21,7 @@ const RoomPage = ({ msg }: any) => {
   const [messages, setMessages] = useState<IMessage[]>(msg);
   const { username, setUsername, uuid } = useContext(UserContext);
   const [imageSrc, setImageSrc] = useState<string>(
-    `https://avatars.dicebear.com/api/open-peeps/${uuid}.svg`,
+    `https://i.pravatar.cc/150?u=${uuid}`,
   );
   const [messageText, setMessageText] = useState<string>(``);
   const [connected, setConnected] = useState<boolean>(false);

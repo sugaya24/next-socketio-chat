@@ -84,7 +84,7 @@ export default function Navbar() {
                     src={
                       session?.user?.image
                         ? session?.user.image
-                        : `https://avatars.dicebear.com/api/open-peeps/${uuid}.svg`
+                        : `https://i.pravatar.cc/150?u=${uuid}`
                     }
                   />
                 </MenuButton>
@@ -96,7 +96,7 @@ export default function Navbar() {
                       src={
                         session?.user?.image
                           ? session?.user.image
-                          : `https://avatars.dicebear.com/api/open-peeps/${uuid}.svg`
+                          : `https://i.pravatar.cc/150?u=${uuid}`
                       }
                     />
                   </Center>
